@@ -1,0 +1,6 @@
+torch
+transformers
+tqdm
+pqdm
+accelerate
+ipython
