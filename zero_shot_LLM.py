@@ -176,7 +176,7 @@ if __name__ == "__main__":
     print(f"Loaded {len(examples)} test examples.")
 
     # Run inference
-    all_results = generate_answer(model, tokenizer, examples, few_shot_examples)
+    all_results = generate_answer(model, tokenizer, examples, few_shot_examples, output_path=args.output_path)
 
     # Collect predictions
     predictions = {res["id"]: res["prediction"] for res in all_results}
