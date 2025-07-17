@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--model_name", type=str, required=True)
 parser.add_argument("--test_path", type=str, required=True)
 parser.add_argument("--train_path", type=str, required=True)
+parser.add_argument("--resume_path", type=str, default=None)
 parser.add_argument("--output_path", type=str, default="visqa_llm_results.json")
 parser.add_argument("--max_new_tokens", type=int, default=50)
 parser.add_argument("--n_few_shot", type=int, default=2)
@@ -132,7 +133,7 @@ def generate_answer(model, tokenizer, examples, few_shot_examples, output_path):
         for i, ex in enumerate(tqdm(examples)):
             if ex["id"] in existing_ids:
                 continue  # Already processed
-            
+
             prompt = build_prompt(ex["context"], ex["question"], few_shot_examples)
             inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=8192)
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
