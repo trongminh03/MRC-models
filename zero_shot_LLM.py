@@ -108,10 +108,31 @@ def build_prompt(context, question, few_shot_examples):
 
 def generate_answer(model, tokenizer, examples, few_shot_examples, output_path):
     results = []
+
+    # Load existing results if output file exists
+    existing_results = []
+    existing_ids = set()
+
+    try:
+        with open(output_path, "r", encoding="utf8") as f:
+            existing_results = json.load(f)
+            existing_ids = {res["id"] for res in existing_results}
+            print(f"Found {len(existing_ids)} existing predictions. Will append remaining.")
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("No existing output or corrupted file. Starting fresh.")
+
     with open(output_path, "w", encoding="utf8") as f:
-        f.write("[\n")  # Start of JSON list
+        f.write("[\n")  # Start JSON list
+
+        # Write existing results first
+        for i, res in enumerate(existing_results):
+            json.dump(res, f, ensure_ascii=False)
+            f.write(",\n")
 
         for i, ex in enumerate(tqdm(examples)):
+            if ex["id"] in existing_ids:
+                continue  # Already processed
+            
             prompt = build_prompt(ex["context"], ex["question"], few_shot_examples)
             inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=8192)
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
