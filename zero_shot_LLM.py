@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--model_name", type=str, required=True)
 parser.add_argument("--test_path", type=str, required=True)
 parser.add_argument("--train_path", type=str, required=True)
-parser.add_argument("--resume_path", type=str, default=None)
+parser.add_argument("--resume_path", type=str, default="")
 parser.add_argument("--output_path", type=str, default="visqa_llm_results.json")
 parser.add_argument("--max_new_tokens", type=int, default=50)
 parser.add_argument("--n_few_shot", type=int, default=2)
@@ -190,13 +190,13 @@ if __name__ == "__main__":
     # Load already processed IDs from output_path
     already_processed_ids = set()
     try:
-        with open(args.output_path, "r", encoding="utf8") as f:
+        with open(args.resume_path, "r", encoding="utf8") as f:
             partial_results = json.load(f)
             for item in partial_results:
                 already_processed_ids.add(item["id"])
             print(f"Resuming from checkpoint. Found {len(already_processed_ids)} already processed predictions.")
     except (FileNotFoundError, json.decoder.JSONDecodeError):
-        print(f"No existing results found at {args.output_path}. Starting fresh.")
+        print(f"No existing results found at {args.resume_path}. Starting fresh.")
 
     # Flatten test examples
     examples = []
