@@ -134,6 +134,11 @@ def generate_answer(model, tokenizer, examples, few_shot_examples, output_path):
                 f.write(",\n")
             else:
                 f.write("\n")
+
+             # 🧹 Explicit memory cleanup
+            del inputs, outputs, decoded, answer
+            torch.cuda.empty_cache()
+
         f.write("]\n")  # End of JSON list
     return results
 
