@@ -160,12 +160,25 @@ if __name__ == "__main__":
     few_shot_examples = load_few_shot_examples(train_data, args.n_few_shot)
     print(f"Loaded {len(few_shot_examples)} few-shot examples.")
 
+    # Load already processed IDs from output_path
+    already_processed_ids = set()
+    try:
+        with open(args.output_path, "r", encoding="utf8") as f:
+            partial_results = json.load(f)
+            for item in partial_results:
+                already_processed_ids.add(item["id"])
+            print(f"Resuming from checkpoint. Found {len(already_processed_ids)} already processed predictions.")
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        print(f"No existing results found at {args.output_path}. Starting fresh.")
+
     # Flatten test examples
     examples = []
     # test_data = test_data[:10]
     for item in test_data:
         for p in item["paragraphs"]:
             for q in p["qas"]:
+                if q["id"] in already_processed_ids:
+                    continue    
                 examples.append({
                     "context": re.sub("\s+", " ", p["context"]).strip(),
                     "question": q["question"].strip(),
