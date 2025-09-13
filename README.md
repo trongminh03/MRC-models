@@ -10,24 +10,24 @@ The pipeline has 3 main steps:
 
 ## Project Structure
 .
-data/
-├── step1_data_prep.sh          # Step 1: Data preparation
-├── step2_speech_proc.sh        # Step 2: Speech generation + ASR
-├── step3_postprocess.sh        # Step 3: Merge + convert to SQuAD
-│
-├── data_preparation/
-│   ├── download_dataset.py
-│   ├── extract_distinct_context.py
-│   └── preprocess_data.py
-│
-├── speech_process/
-│   ├── batch_tts_processor.py
-│   ├── transcription_batch.py
-│   └── normalize_jsonl.py
-│
-└── post_processing/
-    ├── merge_file.py
-    └── convert_to_squad.py
+├── data/
+│   ├── step1_data_prep.sh          # Step 1: Data preparation
+│   ├── step2_speech_proc.sh        # Step 2: Speech generation + ASR
+│   ├── step3_postprocess.sh        # Step 3: Merge + convert to SQuAD
+│   │
+│   ├── data_preparation/
+│   │   ├── download_dataset.py         # Download raw dataset
+│   │   ├── extract_distinct_context.py # Extract unique contexts
+│   │   └── preprocess_data.py          # Preprocess into JSONL format
+│   │
+│   ├── speech_process/
+│   │   ├── batch_tts_processor.py      # Generate audio (TTS) in batch
+│   │   ├── transcription_batch.py      # Run ASR transcription
+│   │   └── normalize_jsonl.py          # Normalize transcript JSONL files
+│   │
+│   └── post_processing/
+│       ├── merge_file.py               # Merge transcripts with QA
+│       └── convert_to_squad.py         # Convert merged data to SQuAD format
 
 ## Requirements
 
@@ -99,11 +99,4 @@ Required params (for both train.py and test.py):
 --output_path: Path to the output directory   
 --is_test: Pass this param in the test.py if you want to run the evaluation on the test set. If none, the code will run evaluation on the development (dev) set.   
 
-
-<!-- ```
-python addnoise.py \\
-  --input_folder "./val_context" \\
-  --noise_folder "./ESC-50-master/audio" \\
-  --output_folder "./val_context_addnoise" \\
-  --output_json "./noise_json/noise_json.json"
-``` -->
+Link dataset: doi.org/10.6084/m9.figshare.29493149
