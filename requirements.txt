@@ -4,3 +4,9 @@ tqdm
 pqdm
 accelerate
 ipython
+numpy
+librosa
+soundfile
+torch-audiomentations
+pydub
+argparse
